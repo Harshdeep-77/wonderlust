@@ -3,37 +3,18 @@ const { model } = require("mongoose");
 const router=express.Router();
 const Listing=require("../models/listing.js");
 const wrapAsync=require("../utils/wrapAsync.js");
-const ExpressError=require("../utils/ExpressError.js");
-const { listingSchema, reviewSchema } = require("../schema.js");
-const Review=require("../models/review.js");
+const {isLoggedIn,isOwner,validateListing}=require("../middleware.js");
 
-//validation for schema
-const validateListing=(req,res,next)=>{
-    let {error}=listingSchema.validate(req.body);
-    if(error){
-        let errMsg=error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400,errMsg);
-    }else{
-        next();
-    };
-};
 
-// const validateReview=(req,res,next)=>{
-//     let {error}=reviewSchema.validate(req.body);
-//     if(error){
-//         let errMsg=error.details.map((el)=>el.message).join(",");
-//         throw new ExpressError(400,errMsg);
-//     }else{
-//         next();
-//     };
-// };
+
+
 //index route
 router.get("/", async(req,res)=>{
     const allListings=await Listing.find({});
     res.render("./listings/index.ejs",{allListings});
 });
 //new route
-router.get("/new",(req,res)=>{
+router.get("/new",isLoggedIn,(req,res)=>{
     res.render("listings/new.ejs");
 });
 // create route
@@ -42,7 +23,7 @@ router.post("/",validateListing, wrapAsync( async(req,res,next)=>{
 
     let listing=req.body.listing;
     const newListing=new Listing(listing);
-   
+    newListing.owner=req.user._id;   
     await newListing.save();
     req.flash("success","New listings created");
     res.redirect("/listings");  
@@ -54,16 +35,24 @@ router.post("/",validateListing, wrapAsync( async(req,res,next)=>{
 //show route
 router.get("/:id",wrapAsync(async(req,res)=>{
     let {id}=req.params;
-    let listing=await Listing.findById(id).populate("reviews");
+    let listing=await Listing.findById(id)
+    .populate({
+        path:"reviews",
+        populate:{
+            path:"author",
+        },
+    })
+    .populate("owner");
     if(!listing){
         req.flash("error","Listing you requested does not exist");
        return res.redirect("/listings");
     };
+    console.log(listing);
     res.render("listings/show.ejs",{listing});
 }));
 
 //edit route
-router.get("/:id/edit",wrapAsync(async(req,res)=>{
+router.get("/:id/edit",isLoggedIn,isOwner,wrapAsync(async(req,res)=>{
      let {id}=req.params;
     let listing=await Listing.findById(id);
         if(!listing){
@@ -73,7 +62,7 @@ router.get("/:id/edit",wrapAsync(async(req,res)=>{
     res.render("listings/edit.ejs",{listing});
 }));
 //update route
-router.put("/:id",validateListing, wrapAsync(async(req,res)=>{
+router.put("/:id",isLoggedIn,isOwner,validateListing, wrapAsync(async(req,res)=>{
     if(!req.body.listing){
         throw new ExpressError(400,"send vaild data for listing");
     }
@@ -83,33 +72,13 @@ router.put("/:id",validateListing, wrapAsync(async(req,res)=>{
     res.redirect(`/listings/${id}`);
 }));
 //delete route
-router.delete("/:id",wrapAsync(async(req,res)=>{
+router.delete("/:id",isLoggedIn,isOwner,wrapAsync(async(req,res)=>{
    let {id}=req.params;
   let deletedListing= await Listing.findByIdAndDelete(id);
   console.log(deletedListing);
   req.flash("success","listings deleted");
   res.redirect("/listings");
 }));
-// //review 
-// //post route
 
-
-// router.post("/:id/review",validateReview,wrapAsync( async (req,res)=>{
-//     let listing=await Listing.findById(req.params.id);
-//     let newReview=new Review(req.body.review);
-//     listing.reviews.push(newReview);
-//     await newReview.save();
-//     await listing.save();
-  
-//     res.redirect(`/listings/${listing.id}`);
-// }));
-
-// //delete reciew route
-// router.delete("/:id/reviews/:reviewId",wrapAsync(async (req,res)=>{
-//     let {id,reviewId}=req.params;
-//     await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
-//     await Review.findByIdAndDelete(reviewId);
-//     res.redirect(`/listings/${id}`);
-// }));
 
 module.exports=router;

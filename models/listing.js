@@ -24,8 +24,13 @@ const listingSchema = new Schema({
         {
             type:Schema.Types.ObjectId,
             ref:"Review",
-        }
-    ]    
+        },
+    ],
+    owner:{
+        type:Schema.Types.ObjectId,
+        ref:"User"
+    }
+       
 });
 //mongosse middleware ,delete review weith listings
 listingSchema.post("findOneAndDelete",async(listing)=>{
