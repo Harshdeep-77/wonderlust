@@ -63,7 +63,7 @@ const sessionOption={
         httpOnly:true,
     },
 };
-store.on("error",()=>{
+store.on("error",(err)=>{
     console.log("error in mongo session store ",err);
 })
 
