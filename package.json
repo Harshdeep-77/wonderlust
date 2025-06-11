@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": "22.15.o"
+    "node": "22.15.0"
   },
   "dependencies": {
     "cloudinary": "^1.30.0",
