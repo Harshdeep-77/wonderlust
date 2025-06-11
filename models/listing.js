@@ -11,11 +11,8 @@ const listingSchema = new Schema({
     description: String,
     image: {
         filename:String,
-        url:{
-        type: String,
-        default:"https://www.psdstack.com/wp-content/uploads/2019/08/copyright-free-images-750x420.jpg",
-        set: (v) => v === "" ? "https://www.psdstack.com/wp-content/uploads/2019/08/copyright-free-images-750x420.jpg" : v,
-        }
+        url:String,
+       
     },
     price: Number,
     location: String,

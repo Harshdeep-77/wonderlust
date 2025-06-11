@@ -18,6 +18,7 @@ const userRouter=require("./routes/user.js");
 
 
 const session=require("express-session");
+const MongoStore = require('connect-mongo');
 const flash=require("connect-flash");
 
 const passport=require("passport");
@@ -32,7 +33,7 @@ app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
-
+const dbUrl=process.env.ATLASDB_URL;
 main()
 .then(() => console.log("connected to dbs"))
 .catch((err)=>{
@@ -40,13 +41,20 @@ main()
 });
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/wonderlust');
+  await mongoose.connect( dbUrl);
 }
 
-
+const store=MongoStore.create({
+    mongoUrl:dbUrl,
+    crypto:{
+        secret: process.env.SECRET
+    },
+    touchAfter:24*3600,
+});
 //validation for schema
 const sessionOption={
-    secret:"mysuperscret",
+    store,
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
@@ -54,12 +62,11 @@ const sessionOption={
         maxAge:7*24*60*60*1000,
         httpOnly:true,
     },
-}
-//index route
-app.get("/", async(req,res)=>{
-    const allListings=await Listing.find({});
-    res.render("./listings/index.ejs",{allListings});
-});
+};
+store.on("error",()=>{
+    console.log("error in mongo session store ",err);
+})
+
 
 app.use(session(sessionOption));
 app.use(flash());
