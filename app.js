@@ -51,6 +51,9 @@ const store=MongoStore.create({
     },
     touchAfter:24*3600,
 });
+store.on("error",(err)=>{
+    console.log("error in mongo session store ",err);
+})
 //validation for schema
 const sessionOption={
     store,
@@ -63,10 +66,11 @@ const sessionOption={
         httpOnly:true,
     },
 };
-store.on("error",(err)=>{
-    console.log("error in mongo session store ",err);
-})
 
+// app.use((req, res, next) => {
+//     res.locals.currUser = req.user; // or req.session.user if you're not using passport
+//     next();
+// });
 
 app.use(session(sessionOption));
 app.use(flash());
@@ -102,7 +106,7 @@ app.all(/.*/,(req,res,next)=>{
 
 app.use((err, req, res, next ) => {
     const { statusCode = 500, message = "Something went wrong" } = err;
-    res.status(statusCode).render("error.ejs", { message, error: err });
+    res.status(statusCode).render("error.ejs", { message });
 });
 
 

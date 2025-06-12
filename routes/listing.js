@@ -33,7 +33,7 @@ router.route("/:id")
 //delete route
     .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));
 //edit route
-router.get("/:id/edit",isLoggedIn,isOwner,wrapAsync(listingController.editLisitng));
+router.get("/:id/edit",isLoggedIn,isOwner,wrapAsync(listingController.editListing));
 
 
 
