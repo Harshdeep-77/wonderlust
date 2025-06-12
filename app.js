@@ -84,31 +84,33 @@ app.use((req,res,next)=>{
     res.locals.currUser=req.user;
     next();
 });
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
  
 app.use("/listings",listingsRouter);
 app.use("/listings/:id/reviews",reviewsRouter);
 app.use("/",userRouter);
 
-app.get("/", (req, res) => {
-    res.redirect("/listings");
-});
+// app.get("/", (req, res) => {
+//     res.redirect("/listings");
+// });
 
 app.all(/.*/,(req,res,next)=>{
     next(new ExpressError(404,"page not found !"));
 });
-app.use((err, req, res, next ) => {
-    const { statusCode = 500, message = "Something went wrong" } = err;
-    res.status(statusCode).render("error.ejs", { message });
-}); 
+
 app.use((err, req, res, next ) => {
     const { statusCode = 500, message = "Something went wrong" } = err;
     res.status(statusCode).render("error.ejs", { message, error: err });
 });
 
 
-
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
 
 
 app.listen(port,(res)=>{
-    console.log("port is listing");
+    console.log("Server is listening on port", port);
 });

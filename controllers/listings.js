@@ -1,20 +1,11 @@
 const { model } = require("mongoose");
 const Listing=require("../models/listing")
 
-// module.exports.index=async(req,res)=>{
-//     const allListings=await Listing.find({});
-//     res.render("./listings/index.ejs",{allListings});
-// };
-module.exports.index = async (req, res, next) => {
-    try {
-        const allListings = await Listing.find({});
-        console.log("✅ Listings fetched:", allListings.length);
-        res.render("listings/index.ejs", { allListings });
-    } catch (err) {
-        console.error("🔥 Error fetching listings:", err);
-        next(err); // this will show error in error.ejs
-    }
+module.exports.index=async(req,res)=>{
+    const allListings=await Listing.find({});
+    res.render("./listings/index.ejs",{allListings});
 };
+
 
 module.exports.renderNewForm=(req,res)=>{
     res.render("listings/new.ejs");
