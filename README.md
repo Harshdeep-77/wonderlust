@@ -1,14 +1,20 @@
-# 🧳 Yaatra – Airbnb Clone
+# 🧳 Yaatra 
 
-Yaatra is a full-stack web application inspired by Airbnb, built with the MERN stack (minus React), where users can list, view, and manage rental properties.
+A full-featured travel accommodation marketplace platform that allows users to discover, list, and review unique stays around the world. This application provides a comprehensive system for managing property listings, user authentication, reviews, and location-based searches.
 
-## 🚀 Features
-- User registration, login, and session-based authentication (Passport.js)
-- Full CRUD functionality for property listings
-- Cloud image uploads via Multer + Cloudinary
-- Form validation, error handling, and flash messaging
-- Responsive UI built using EJS and Bootstrap
-- MVC structure with Express Router and MongoDB integration
+✨ Features
+
+🔐 User Authentication: Secure signup, login, and logout functionality
+🔒 Authorization: Role-based access control for listing and review management
+📝 Listing Management: Create, read, update, and delete property listings
+🖼️ Image Upload: Cloud-based image storage for property listings
+📍 Location Services: Geocoding and interactive maps for properties
+⭐ Review System: Add, view, and delete reviews with ratings (1-5 stars)
+🔍 Category Filtering: Browse listings by property type (mountains, arctic, farms, deserts, castles)
+💬 Flash Messages: Informative feedback for user actions
+📱 Responsive Design: User-friendly interface across devices
+🔄 Session Management: Persistent user sessions with secure cookie handling
+
 
 ## 🛠 Tech Stack
 - Backend: Node.js, Express.js
@@ -17,9 +23,10 @@ Yaatra is a full-stack web application inspired by Airbnb, built with the MERN s
 - File Uploads: Multer + Cloudinary
 - Frontend: EJS, Bootstrap
 
-## 📷 Demo
-![Yaatra demo screenshot](demo-image-link-if-any)
+
 
 ## 🔗 Live Link
-[Visit Yaatra](your-deployment-link)
+[Visit Yaatra](https://yaatra-7f35.onrender.com)
+
+
 
