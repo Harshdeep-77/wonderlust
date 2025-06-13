@@ -43,7 +43,7 @@ module.exports.showListing=async(req,res)=>{
     // console.log(listing);
     res.render("listings/show.ejs",{listing});
 };
-module.exports.editLisitng=async(req,res)=>{
+module.exports.editListing=async(req,res)=>{
      let {id}=req.params;
     let listing=await Listing.findById(id);
         if(!listing){
